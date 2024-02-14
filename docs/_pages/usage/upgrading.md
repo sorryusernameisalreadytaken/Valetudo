@@ -6,6 +6,7 @@ order: 11
 # Upgrading Valetudo
 
 If you're using Valetudo 2021.11.0 or later, you should be able to use its integrated updater functionality.
+In addition, for some users it is not possible to get the latest firmware via the normal flash method.
 
 Below are manual upgrading instructions for older versions:
 
@@ -16,11 +17,20 @@ Below are manual upgrading instructions for older versions:
 If you're using an S5 or V1, the recommended way to upgrade Valetudo is to flash a new image. This requires you to have SSH access to the robot.
 
 1. Select the `Build for manual installation (requires SSH to install)` option in the [Dustbuilder](https://builder.dontvacuum.me/). You will then receive a link to a tar.gz archive by email.
-2. Login to your robot via SSH.
+2. Login to your robot via SSH:
+```sh
+ssh -i <something>.id_rsa -l root <ip.of.your.roborock>
+```
 3. Download the tar.gz file to the `/mnt/data` folder and extract it:
 ```sh
 cd /mnt/data
 wget <url to tar from dustbuilder>
+tar xzf <file.tar.gz>
+```
+If you get some errors on this point while wget the tar.gz, it could be caused by ssl. You can try this:
+```sh
+cd /mnt/data
+wget <url to tar from dustbuilder> --no-check-certificate
 tar xzf <file.tar.gz>
 ```
 4. The robot has two systems, you cannot update a system whilst it is in use. You will be in system A by default, allowing you to update system B. Update system B (from system A) then reboot into system B:
@@ -32,7 +42,7 @@ reboot
 ```sh
 cd /mnt/data
 ./install_a.sh
-rm -f <file.tar.gz>
+rm -f <file.tar.gz> disk.img firmware.md5sum install_a.sh install_b.sh
 reboot
 ```
 
